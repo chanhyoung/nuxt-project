@@ -6,7 +6,8 @@ export default withNuxt(
   // Your custom configs here
   {
     rules: {
-      'no-console': 'warn',
+      'no-console': 'off',
+      'vue/require-default-prop': 'off',
     },
   },
   skipFormatting,

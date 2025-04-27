@@ -10,6 +10,15 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/eslint', 'nuxt-quasar-ui'],
 
+  // imports: {
+  //   presets: [
+  //     {
+  //       from: 'vue-i18n',
+  //       imports: ['useI18n'],
+  //     },
+  //   ],
+  // },
+
   quasar: {
     /* */
   },

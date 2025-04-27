@@ -64,27 +64,29 @@
       />
     </q-form>
     <template #footer>
-      <q-btn
-        v-if="prevCourse"
-        label="이전 강의"
-        color="primary"
-        unelevated
-        @click="movePage(prevCourse.path)"
-      />
-      <q-btn
-        label="쿼리 추가"
-        color="dark"
-        unelevated
-        :to="{ path: $route.path, query: { timestamp: Date.now() } }"
-      />
-      <q-space />
-      <q-btn
-        v-if="nextCourse"
-        label="다음 강의"
-        color="primary"
-        unelevated
-        @click="movePage(nextCourse.path)"
-      />
+      <ClientOnly>
+        <q-btn
+          v-if="prevCourse"
+          label="이전 강의"
+          color="primary"
+          unelevated
+          @click="movePage(prevCourse.path)"
+        />
+        <q-btn
+          label="쿼리 추가"
+          color="dark"
+          unelevated
+          :to="{ path: $route.path, query: { timestamp: Date.now() } }"
+        />
+        <q-space />
+        <q-btn
+          v-if="nextCourse"
+          label="다음 강의"
+          color="primary"
+          unelevated
+          @click="movePage(nextCourse.path)"
+        />
+      </ClientOnly>
     </template>
   </AppCard>
 </template>

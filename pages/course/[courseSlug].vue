@@ -64,29 +64,29 @@
       />
     </q-form>
     <template #footer>
+      <q-btn
+        v-if="prevCourse"
+        label="이전 강의"
+        color="primary"
+        unelevated
+        @click="movePage(prevCourse.path)"
+      />
       <ClientOnly>
-        <q-btn
-          v-if="prevCourse"
-          label="이전 강의"
-          color="primary"
-          unelevated
-          @click="movePage(prevCourse.path)"
-        />
         <q-btn
           label="쿼리 추가"
           color="dark"
           unelevated
           :to="{ path: $route.path, query: { timestamp: Date.now() } }"
         />
-        <q-space />
-        <q-btn
-          v-if="nextCourse"
-          label="다음 강의"
-          color="primary"
-          unelevated
-          @click="movePage(nextCourse.path)"
-        />
       </ClientOnly>
+      <q-space />
+      <q-btn
+        v-if="nextCourse"
+        label="다음 강의"
+        color="primary"
+        unelevated
+        @click="movePage(nextCourse.path)"
+      />
     </template>
   </AppCard>
 </template>
@@ -95,6 +95,15 @@
 const route = useRoute()
 const courseSlug = route.params.courseSlug as string
 const { course, prevCourse, nextCourse } = useCourse(courseSlug)
+
+if (!course) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Course not found',
+    fatal: true,
+  })
+}
+
 // console.log('[courseSlug].vue 컴포넌트 setup hooks');
 // const title = ref('');
 definePageMeta({

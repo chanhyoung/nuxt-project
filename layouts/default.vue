@@ -79,7 +79,7 @@
     </q-header>
     <q-page-container :style="pageContainerStyle">
       <q-banner v-if="isAuthenticated" class="bg-primary text-white">
-        {{ authUser }}
+        {{ user }}
       </q-banner>
 
       <slot></slot>
@@ -89,8 +89,10 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-const { authUser, isAuthenticated } = useAuthUser();
-const { signOut } = useAuth();
+const authStore = useAuthStore();
+const { user, isAuthenticated } = storeToRefs(authStore);
+const { signOut } = authStore;
+
 const pageContainerStyle = computed(() => ({
   maxWidth: '1080px',
   margin: '0 auto',

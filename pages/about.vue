@@ -14,8 +14,19 @@
           >NuxtLink Youtube</NuxtLink
         >
       </div>
+      <div class="q-gutter-y-sm q-mt-md">
+        <div class="text-subtitle1 text-weight-bold">useCounterStore()</div>
+        <div>{{ count }}</div>
+        <div>{{ doubleCount }}</div>
+        <div>
+          <q-btn label="increment" @click="counterStore.increment()" />
+        </div>
+      </div>
     </div>
   </q-page>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const counterStore = useCounterStore();
+const { count, doubleCount } = storeToRefs(counterStore);
+</script>

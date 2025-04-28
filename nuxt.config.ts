@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     typeCheck: true,
   },
 
-  modules: ['@nuxt/eslint', 'nuxt-quasar-ui'],
+  modules: ['@nuxt/eslint', 'nuxt-quasar-ui', '@pinia/nuxt'],
 
   // imports: {
   //   presets: [

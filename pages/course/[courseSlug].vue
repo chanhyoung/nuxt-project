@@ -114,15 +114,20 @@ definePageMeta({
   pageType: '',
   // keepalive: true,
 
-  validate: (route) => {
+  // validate: (route) => {
+  middleware: (route) => {
     const courseSlug = route.params.courseSlug as string;
     const { course } = useCourse(courseSlug);
     if (!course) {
       // return false
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Course not found',
-      })
+      // return navigateTo('/')
+      return abortNavigation(
+        createError({
+          statusCode: 404,
+          statusMessage: 'Course not found',
+          fatal: true,
+        })
+      );
     }
     return true
   },

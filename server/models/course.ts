@@ -1,4 +1,4 @@
-import type { Course } from '~/types/course'
+import type { Course, CourseWithPath, CourseReturn } from '~/types/course'
 
 const courses: Course[] = [
   {
@@ -131,4 +131,26 @@ const courses: Course[] = [
 프론트엔드 웹을 개발할 때 에디터, 무한 스크롤링, 검색 기능, 디버깅 등 다양한 지식이 필요한데요. 해당 강의에서는 실무 경험에서 알 수 있는 다양한 웹 기술까지 습득하여 개발자로서 한 단계 성장할 수 있는 강의입니다.`,
   },
 ]
-export default courses
+
+export function getCourses(): CourseWithPath[] {
+  return courses.map(item => ({
+    ...item,
+    rating: item.rating.toFixed(1), // 5 -> 5.0
+    reviewsCount: item.reviewsCount.toLocaleString(), // 1000 -> 1,000
+    studentCount: item.studentCount.toLocaleString(), // 12345 -> 12,345
+    path: `/course/${item.courseSlug}`,
+  }))
+}
+
+export function getCourseDetails(courseSlug: string): CourseReturn {
+  const courses = getCourses();
+  const index = courses.findIndex(course => course.courseSlug === courseSlug)
+  const course = courses[index]
+  const prevCourse = index <= 0 ? null : courses[index - 1]
+  const nextCourse = index >= courses.length - 1 ? null : courses[index + 1]
+  return {
+    course,
+    prevCourse,
+    nextCourse,
+  }
+}

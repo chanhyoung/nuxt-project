@@ -4,6 +4,7 @@ export const useAuthStore = defineStore('auth', () => {
   const authUser = ref<Maybe<UserWithoutPassword>>();
 
   const signIn = async(email: string, password: string) => {
+    console.log('signIn')
     const data = await $fetch<{ user: UserWithoutPassword}>('/auth/login', {
       method: 'POST',
       body: {

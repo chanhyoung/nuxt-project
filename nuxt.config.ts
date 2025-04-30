@@ -8,7 +8,12 @@ export default defineNuxtConfig({
     typeCheck: true,
   },
 
-  modules: ['@nuxt/eslint', 'nuxt-quasar-ui', '@pinia/nuxt'],
+  modules: [
+    '@nuxt/eslint', 
+    'nuxt-quasar-ui', 
+    '@pinia/nuxt', 
+    '@vueuse/nuxt'
+  ],
 
   // imports: {
   //   presets: [
@@ -27,4 +32,12 @@ export default defineNuxtConfig({
       }
     }
   },
+
+  runtimeConfig: {
+    authCookieName: '__user',
+    jwtSecretKey: 'superkey',
+    public: {
+      clientConfigValue: 'test'
+    }
+  }
 })

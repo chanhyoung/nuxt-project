@@ -41,7 +41,8 @@ export default defineNuxtConfig({
     authCookieName: '__user',
     jwtSecretKey: 'superkey',
     public: {
-      clientConfigValue: 'test'
+      clientConfigValue: 'test',
+      apiBase: 'http://localhost:8080'
     }
   }
 })

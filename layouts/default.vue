@@ -57,7 +57,7 @@
           v-if="!isAuthenticated"
           v-slot="{ navigate }"
           custom
-          to="/login"
+          to="/auth/login"
         >
           <q-btn
             stretch

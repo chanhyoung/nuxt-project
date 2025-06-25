@@ -15,6 +15,10 @@ export default defineNuxtConfig({
     '@vueuse/nuxt'
   ],
 
+  css: [
+    '~/assets/css/tiptap.scss',
+  ],
+
   // imports: {
   //   presets: [
   //     {

@@ -1,5 +1,5 @@
 <template>
-  <aside>
+  <aside class="sticky-side-bar">
     <slot></slot>
   </aside>
 </template>

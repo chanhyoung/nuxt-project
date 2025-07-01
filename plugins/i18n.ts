@@ -4,12 +4,13 @@ export default defineNuxtPlugin(({ vueApp }) => {
   const i18n = createI18n({
     legacy: false,
     globalInjection: true,
-    locale: 'en',
+    // locale: en',
+    locale: useCookie('locale').value || useDefaultLocale().value,
     messages: {
       en: {
         home: 'Home',
         about: 'About',
-        youtube: 'Youtube',
+        community: 'Community',
         admin: 'Admin',
         login: 'Login',
         logout: 'Logout',
@@ -17,7 +18,7 @@ export default defineNuxtPlugin(({ vueApp }) => {
       ko: {
         home: '홈',
         about: '어바웃',
-        youtube: '유튜브',
+        community: '커뮤니티',
         admin: '관리자',
         login: '로그인',
         logout: '로그아웃',

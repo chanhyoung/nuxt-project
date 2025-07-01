@@ -18,13 +18,22 @@
           />
         </NuxtLink>
         <q-separator dark vertical />
-        <q-btn
+        <NuxtLink v-slot="{ navigate }" custom to="/community">
+          <q-btn
+            stretch
+            flat
+            :label="$t('community')"
+            no-caps
+            @click="navigate()"
+          />
+        </NuxtLink>
+        <!-- <q-btn
           stretch
           flat
           :label="$t('youtube')"
           no-caps
           @click="moveYoutube"
-        />
+        /> -->
         <q-separator dark vertical />
         <NuxtLink v-slot="{ navigate }" custom to="/admin">
           <q-btn
@@ -67,14 +76,22 @@
             @click="navigate()"
           />
         </NuxtLink>
-        <q-btn
-          v-else
-          stretch
-          flat
-          :label="$t('logout')"
-          no-caps
-          @click="signOut()"
-        />
+        <template v-else>
+          <q-btn
+            stretch
+            flat
+            :label="$t('logout')"
+            no-caps
+            @click="signOut()"
+          />
+          <NuxtLink v-slot="{ navigate }" custom to="/mypage/profile">
+            <q-btn round flat @click="navigate()">
+              <q-avatar>
+                <img src="/images/boy-avatar.png" alt="">
+              </q-avatar>
+            </q-btn>
+          </NuxtLink>
+        </template>
       </q-toolbar>
     </q-header>
     <q-page-container :style="pageContainerStyle">
@@ -98,12 +115,12 @@ const pageContainerStyle = computed(() => ({
   margin: '0 auto',
 }))
 
-const moveYoutube = async () => {
-  await navigateTo('https://youtube.com/@gymcoding', {
-    external: true,
-    open: { target: '_blank' },
-  })
-}
+// const moveYoutube = async () => {
+//   await navigateTo('https://youtube.com/@gymcoding', {
+//     external: true,
+//     open: { target: '_blank' },
+//   })
+// }
 
 interface Language {
   name: string
@@ -120,4 +137,6 @@ const { locale } = useI18n()
 const selectedLanguageName = computed(
   () => languages.value.find(lang => lang.code === locale.value)?.name,
 )
+
+watch(locale, (val) => (useCookie('locale').value = val))
 </script>

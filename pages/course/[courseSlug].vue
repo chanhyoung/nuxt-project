@@ -17,7 +17,7 @@
       </div>
     </template>
     <div class="q-mb-md">
-      <VideoPlayer :src="course?.video" />
+      <CourseVideoPlayer :src="course?.video" />
     </div>
     <div class="row q-col-gutter-md">
       <div class="col-6">
@@ -63,7 +63,7 @@
         autogrow
       />
     </q-form>
-    <template #footer>
+    <!-- <template #footer>
       <q-btn
         v-if="prevCourse"
         label="이전 강의"
@@ -87,14 +87,18 @@
         unelevated
         @click="movePage(nextCourse.path)"
       />
-    </template>
+    </template> -->
   </AppCard>
 </template>
 
-<script setup lang="ts">
-const route = useRoute()
-const courseSlug = route.params.courseSlug as string
-const { course, prevCourse, nextCourse } = await useCourse(courseSlug) || {}
+<script setup>
+const route = useRoute();
+const courseSlug = route.params.courseSlug;
+console.log(">>>courseSlug: ", courseSlug);
+// const { course, prevCourse, nextCourse } = await useCourse(courseSlug) || {}
+
+const { getCourse } = useCourseStore();
+const course = await getCourse(courseSlug);
 
 // if (!course) {
 //   console.log("error: 1")
@@ -116,35 +120,35 @@ definePageMeta({
 
   // validate: (route) => {
   middleware: async (route) => {
-    const courseSlug = route.params.courseSlug as string;
-    const { course } = await useCourse(courseSlug) || {};
-    if (!course) {
-      // return false
-      // return navigateTo('/')
-      return abortNavigation(
-        createError({
-          statusCode: 404,
-          statusMessage: 'Course not found',
-          fatal: true,
-        })
-      );
-    }
-    return true
+    // const courseSlug = route.params.courseSlug;
+    // const { course } = await useCourse(courseSlug) || {};
+    // if (!course) {
+    //   // return false
+    //   // return navigateTo('/')
+    //   return abortNavigation(
+    //     createError({
+    //       statusCode: 404,
+    //       statusMessage: 'Course not found',
+    //       fatal: true,
+    //     })
+    //   );
+    // }
+    // return true
   },
 })
 
 const memo = ref('')
 const completed = ref(false)
 
-const movePage = async (path: string) => {
-  await navigateTo(path)
-}
+// const movePage = async (path) => {
+//   await navigateTo(path)
+// }
 
 const toggleComplete = () => {
   // $fetch('/api/error')
   // showError('에러가 발생했습니다.')
   completed.value = !completed.value
-  throw createError('에러가 발생했습니다.')
+  // throw createError('에러가 발생했습니다.')
 }
 </script>
 

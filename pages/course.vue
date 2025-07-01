@@ -12,7 +12,7 @@
               :key="course.courseSlug"
               v-ripple
               clickable
-              :to="course.path"
+              :to="`/course/${course.courseSlug}`"
             >
               <q-item-section>
                 {{ index + 1 }}. {{ course.title }}
@@ -25,9 +25,9 @@
         </q-card>
       </div>
       <div class="col">
-        <NuxtErrorBoundary>
+        <!-- <NuxtErrorBoundary> -->
           <NuxtPage />
-          <template #error="{ error, clearError }">
+          <!-- <template #error="{ error, clearError }">
             <div class="flex flex-center column q-py-xl">
               <div class="text-h6 q-mb-lg">
                 {{ error }}
@@ -35,12 +35,15 @@
               <q-btn label="Reset" color="positive" no-caps @click="clearError"></q-btn>
             </div>
           </template>
-        </NuxtErrorBoundary>
+        </NuxtErrorBoundary> -->
       </div>
     </div>
   </q-page>
 </template>
 
-<script setup lang="ts">
-const { courses } = await useCourses()
+<script setup>
+const { getCourses } = useCourseStore();
+const { courses } = await getCourses();
+
+console.log('courses: ', courses);
 </script>

@@ -11,7 +11,7 @@
             filled 
             placeholder="이름" 
             hide-bottom-space 
-            :rule="[validateRequired]" 
+            :rules="[validateRequired]" 
           />
 
           <q-input 
@@ -19,14 +19,14 @@
             filled 
             placeholder="이메일" 
             hide-bottom-space 
-            :rule="[validateRequired]" 
+            :rules="[validateRequired]" 
           />
 
           <q-input 
             v-model="form.password" 
             filled type="password" 
             placeholder="비밀번호" 
-            hide-bottom-space :rule="[validateRequired]" />
+            hide-bottom-space :rules="[validateRequired]" />
 
           <q-input 
             v-model="passwordConfirm" 

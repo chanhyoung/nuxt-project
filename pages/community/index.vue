@@ -7,7 +7,7 @@
         <PostList :items="posts"></PostList>
       </section>
       <PostRightBar class="col-3" @open-write-dialog="openWriteDialog"></PostRightBar>
-      <PostWriteDialog v-model="postDialog"></PostWriteDialog>
+      <PostWriteDialog v-model="postDialog" @success="postDialog = false"></PostWriteDialog>
     </div>
   </q-page>
 </template>

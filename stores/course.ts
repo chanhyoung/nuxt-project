@@ -23,8 +23,8 @@ export const useCourseStore = defineStore('course', () => {
   const getCourse = async (courseSlug: string) => {
     console.log('>>>getCourse: start.');
     console.log('>>>courseSlug: ', courseSlug);
-    const { fetchWithAuth } = useAuth();
-    const { data, error } = await fetchWithAuth(`${apiBase}/courses/${courseSlug}`);
+    const { useFetchWithAuth } = useAuth();
+    const { data, error } = await useFetchWithAuth(`${apiBase}/courses/${courseSlug}`);
     if (data === null || error === null) return;
 
     if (error.value) {

@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="row q-col-gutter-x-lg">
-      <PostLeftBar class="col-grow"></PostLeftBar>
+      <PostLeftBar v-model:category="params.category" class="col-grow"></PostLeftBar>
       <section class="col-7"> 
         <PostHeader></PostHeader>
         <PostList :items="posts"></PostList>
@@ -13,20 +13,34 @@
 </template>
 
 <script setup>
-  const posts = Array.from(Array(20), (_, index) => ({
-    id: index,
-    title: 'Vue3 Firebase 강의 ' + index,
-    content: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius sunt
-    perspiciatis doloremque comodi error, magnam cupiditate ipsum optio consequuntur
-    neque, beatae, maiores delectus molestias cumque debitis sit? aliquid, iste modi.`,
-    readCount: 1,
-    commentCount: 2,
-    likeCount: 3,
-    bookmarkCount: 4,
-    tags: ['html', 'css', 'javascript'],
-    uid: 'uid',
-    category: '카테고리'
-  }));
+  // posts를 반응형 데이터로 선언
+  const posts = ref([]);
+  const { getPosts } = usePostStore();
+  // 초기 데이터 로드
+  const loadPosts = async (category = 'all') => {
+    try {
+      const result = await getPosts(category);
+      posts.value = result; // .value를 사용하여 반응형 데이터 업데이트
+    } catch (error) {
+      console.error('Failed to load posts:', error);
+      posts.value = [];
+    }
+  };
+
+  await loadPosts();
+
+  const params = ref({
+    category: 'all'
+  });
+
+  // params 변경 감지
+  watch(params, async () => {
+    await loadPosts(params.value.category);
+  }, {
+    deep: true
+  });
+
+  console.log("posts: ", posts)
 
   const postDialog = ref(false);
 

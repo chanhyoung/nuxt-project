@@ -31,9 +31,16 @@
             outlined 
             placeholder="태그를 입력해주세요~! (입력 후 Enter)" 
             prefix="#"
+            @keypress.enter.prevent="onRegistTag"
           />
-          <q-chip outline dense color="teal" removable @remove="removeTag">
-            vuejs
+          <q-chip 
+            v-for="(tag, index) in form.tags" :key="tag" 
+            outline 
+            dense 
+            color="teal" 
+            removable 
+            @remove="removeTag(index)">
+            {{ tag }}
           </q-chip>
         </q-card-section>
         <q-separator></q-separator>
@@ -44,7 +51,7 @@
             flat 
             label="저장하기" 
             color="primary" 
-            :loading="loading"
+            :loading="isLoading"
           />
         </q-card-actions>
       </q-form>
@@ -62,15 +69,34 @@ const getInitialForm = () => ({
 </script>
 <script setup>
 const emit = defineEmits(['success'])
-
 const { createPost } = usePostStore();
 
 const categories = getCategories();
 
 const form = ref(getInitialForm());
 const tagField = ref('');
+const isLoading = ref(false);
 
-const loading = ref(false);
+// const router = useRouter()
+
+const onRegistTag = (e) => {
+  const tagValue = e.target.value.replace(/ /g, '');
+  if (!tagValue) {
+    return;
+  }
+  if (form.value.tags.length >= 10) {
+    Notify.create({
+      message: "태그는 10개 이상 등록할 수 없습니다.",
+      type: 'warning'
+    })
+    return;
+  }
+  if (form.value.tags.includes(tagValue) === false) {
+    form.value.tags = [...form.value.tags, tagValue]
+  }
+  e.target.value = '';
+  console.log('from.value.tags: ', form.value.tags)
+}
 
 const handleSubmit = async () => {
   console.log('handleSubmit')
@@ -83,17 +109,20 @@ const handleSubmit = async () => {
   }
 
   try {
+    isLoading.value = true;
     await createPost(
       form.value.title, 
       form.value.category, 
       form.value.content, 
-      // form.value.tags
+      form.value.tags
     );
     Notify.create({
       message: "새글을 작성하였습니다.",
       type: 'info',
-      color: "primary"
+      color: "primary",
+      position: "top"
     })
+    // router.push(`/community/${postSlug}`)
     emit('success');
   } catch (err) {
     console.log(err)
@@ -102,12 +131,15 @@ const handleSubmit = async () => {
       type: 'nagative'
     })
   } finally {
-    loading.value = false;
+    isLoading.value = false;
   }
 };
 
-const removeTag = () => {
-  console.log("removeTag")
+const removeTag = (index) => {
+  const tags = [...form.value.tags];
+  tags.splice(index, 1);
+  form.value.tags = tags;
+  tagField.value = '';
 }
 
 const onHide = () => {

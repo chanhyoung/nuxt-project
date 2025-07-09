@@ -7,7 +7,7 @@
     </q-item-section>
     <q-item-section>
       <div class="flex item-center">
-        <span>닉네임&nbsp;&middot;&nbsp;3일 전</span>
+        <span>닉네임&nbsp;&middot;&nbsp;{{ createdAt }}</span>
         <q-chip class="q-ml-sm" dense color="primary" text-color="white">
           {{ category  }}
         </q-chip>
@@ -48,6 +48,7 @@
 </template>
 
 <script setup>
+
 defineProps({
   id: {
     type: Number
@@ -77,8 +78,8 @@ defineProps({
   category: {
     type: String
   },
-  createTime: {
-    type: Date
+  createdAt: {
+    type: String
   },
   tags: {
     type: Array,

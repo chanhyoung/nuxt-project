@@ -24,10 +24,11 @@ export const useAuthStore = defineStore('auth', () => {
       });
     });
 
+    console.log("fetData: ", fetData)
     data.value = fetData;
 
     const foundUser = {
-      id: '',
+      id: data.value.userId,
       email: email,
       roles: ['ADMIN'],
       token: data.value.accessToken

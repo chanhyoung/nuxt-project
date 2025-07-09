@@ -1,7 +1,7 @@
 export const useAuth = () => {
   const authStore = useAuthStore();
   const { user, isAuthenticated } = storeToRefs(authStore);
-
+  
   const useFetchWithAuth = async (url, options = {}) => {
     console.log('useFetchWithAuth: start.');
     if (!isAuthenticated.value) {
@@ -33,7 +33,7 @@ export const useAuth = () => {
       return Promise.resolve({ data: null, error: null });
     }
 
-    const data = await $fetch(url, {
+    const fetData = await $fetch(url, {
       ...options,
       headers: {
         ...options.headers,
@@ -55,7 +55,7 @@ export const useAuth = () => {
       });
     });
 
-    return data.value;
+    return fetData;
   };
 
   return {

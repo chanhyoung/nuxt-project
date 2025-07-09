@@ -17,7 +17,7 @@
   const posts = ref([]);
   const { getPosts } = usePostStore();
   // 초기 데이터 로드
-  const loadPosts = async (category = 'all') => {
+  const loadPosts = async (category = null) => {
     try {
       const result = await getPosts(category);
       posts.value = result; // .value를 사용하여 반응형 데이터 업데이트
@@ -30,7 +30,7 @@
   await loadPosts();
 
   const params = ref({
-    category: 'all'
+    category: null
   });
 
   // params 변경 감지

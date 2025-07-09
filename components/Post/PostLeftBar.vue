@@ -6,7 +6,7 @@
           v-ripple="false" 
           clickable 
           :active="category === null"
-          @click="changeCategory('all')"
+          @click="changeCategory(null)"
         >
           <q-item-section>전체</q-item-section>
         </q-item>

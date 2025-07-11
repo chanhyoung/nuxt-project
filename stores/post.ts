@@ -16,10 +16,15 @@ export const usePostStore = defineStore('post', () => {
     })
   };
 
-  const getPosts = async (category: string) => {
+  const getPosts = async (category: string | null) => {
     console.log('>>>getPosts: start.', category);
     const { fetchWithAuth } = useAuth();
-    const data = await fetchWithAuth(`${apiBase}/posts?category=${category}`, {
+
+    const url = category 
+      ? `${apiBase}/posts?category=${category}`
+      : `${apiBase}/posts`;
+
+    const data = await fetchWithAuth(url, {
       method: 'GET'
     })
 

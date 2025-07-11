@@ -98,6 +98,13 @@ const onRegistTag = (e) => {
   console.log('from.value.tags: ', form.value.tags)
 }
 
+const removeTag = (index) => {
+  const tags = [...form.value.tags];
+  tags.splice(index, 1);
+  form.value.tags = tags;
+  tagField.value = '';
+}
+
 const handleSubmit = async () => {
   console.log('handleSubmit')
   if (!form.value.content) {
@@ -134,13 +141,6 @@ const handleSubmit = async () => {
     isLoading.value = false;
   }
 };
-
-const removeTag = (index) => {
-  const tags = [...form.value.tags];
-  tags.splice(index, 1);
-  form.value.tags = tags;
-  tagField.value = '';
-}
 
 const onHide = () => {
   form.value = getInitialForm();

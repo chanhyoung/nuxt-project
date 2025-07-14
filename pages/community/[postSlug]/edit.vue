@@ -13,13 +13,12 @@
         @submit="handleSubmit"
       >
         <template #actions>
-          <q-btn 
-            flat label="취소하기" @click="cancel"></q-btn>
-          <q-btn 
-            type="submit" 
-            flat 
-            label="수정하기" 
-            color="primary" 
+          <q-btn flat label="취소하기" @click="cancel"></q-btn>
+          <q-btn
+            type="submit"
+            flat
+            label="수정하기"
+            color="primary"
             :loading="isLoading"
           />
         </template>
@@ -34,7 +33,7 @@ const getInitialForm = () => ({
   title: '',
   category: '',
   content: '',
-  tags: []
+  tags: [],
 })
 </script>
 <script setup>
@@ -43,43 +42,43 @@ const pageContainerStyle = computed(() => ({
   margin: '0 auto',
 }))
 
-const isLoading = ref(false);
-const form = ref(getInitialForm());
-const { getPost, updatePost } = usePostStore();
-const route = useRoute();
-const router = useRouter();
+const isLoading = ref(false)
+const form = ref(getInitialForm())
+const { getPost, updatePost } = usePostStore()
+const route = useRoute()
+const router = useRouter()
 
-const result = await getPost(route.params.postSlug);
-form.value = result;
-console.log ('form.value: ', form.value);
+const result = await getPost(route.params.postSlug)
+form.value = result
+console.log('form.value: ', form.value)
 
 const handleSubmit = async () => {
   try {
-    isLoading.value = true;
+    isLoading.value = true
     await updatePost(
       form.value.id,
-      form.value.title, 
-      form.value.category, 
-      form.value.content, 
-      form.value.tags
-    );
+      form.value.title,
+      form.value.category,
+      form.value.content,
+      form.value.tags,
+    )
     Notify.create({
-      message: "글을 수정하였습니다.",
+      message: '글을 수정하였습니다.',
       type: 'info',
-      color: "primary",
-      position: "top"
+      color: 'primary',
+      position: 'top',
     })
-    router.push(`/community/${postSlug}`)
+    router.push(`/community/${route.params.postSlug}`)
   } catch (err) {
     console.log(err)
     Notify.create({
       message: err.value.data.message,
-      type: 'nagative'
+      type: 'nagative',
     })
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
-};
+}
 
 const cancel = () => {
   router.push(`/community/${route.params.postSlug}`)

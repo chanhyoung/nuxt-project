@@ -2,38 +2,35 @@
   <q-page padding :style="pageContainerStyle">
     <q-card flat bordered>
       <q-toolbar>
-        <q-toolbar-title>글쓰기</q-toolbar-title>
+        <q-toolbar-title>글수정</q-toolbar-title>
       </q-toolbar>
       <q-separator></q-separator>
-      <q-form @submit.prevent>
-        <q-card-section class="q-gutter-y-sm">
-          <q-input v-model="form.title" outlined placeholder="제목"></q-input>
-          <q-select 
-            v-model="form.category"
-            outlined
-            :options="categories"
-            emit-value 
-            map-options>
-            <template v-if="!form.category" #selected>
-              <span class="text-grey-7">카테고리를 선택하세요</span>
-            </template>
-          </q-select>
-          <q-input v-model="form.content" type="textarea" outlined placeholder="내용을 작성해주세요~!"></q-input>
-          <q-input v-model="tagField" outlined placeholder="태그를 입력해주세요~! (입력 후 Enter)" prefix="#"></q-input>
-          <q-chip outline dense color="teal" removable @remove="removeTag">vuejs</q-chip>
-        </q-card-section>
-        <q-separator></q-separator>
-        <q-card-actions align="right">
-          <q-btn v-close-popup type="submit" flat label="취소하기"></q-btn>
-          <q-btn type="submit" flat label="저장하기" color="primary"></q-btn>
-        </q-card-actions>
-      </q-form>
+      <PostForm
+        v-model:title="form.title"
+        v-model:category="form.category"
+        v-model:content="form.content"
+        v-model:tags="form.tags"
+        @submit="handleSubmit"
+      >
+        <template #actions>
+          <q-btn 
+            flat label="취소하기" @click="cancel"></q-btn>
+          <q-btn 
+            type="submit" 
+            flat 
+            label="수정하기" 
+            color="primary" 
+            :loading="isLoading"
+          />
+        </template>
+      </PostForm>
     </q-card>
   </q-page>
 </template>
 
 <script>
 const getInitialForm = () => ({
+  id: '',
   title: '',
   category: '',
   content: '',
@@ -46,18 +43,45 @@ const pageContainerStyle = computed(() => ({
   margin: '0 auto',
 }))
 
-const categories = getCategories();
-
+const isLoading = ref(false);
 const form = ref(getInitialForm());
-const tagField = ref('');
+const { getPost, updatePost } = usePostStore();
+const route = useRoute();
+const router = useRouter();
 
-const removeTag = () => {
-  console.log("removeTag")
+const result = await getPost(route.params.postSlug);
+form.value = result;
+console.log ('form.value: ', form.value);
+
+const handleSubmit = async () => {
+  try {
+    isLoading.value = true;
+    await updatePost(
+      form.value.id,
+      form.value.title, 
+      form.value.category, 
+      form.value.content, 
+      form.value.tags
+    );
+    Notify.create({
+      message: "글을 수정하였습니다.",
+      type: 'info',
+      color: "primary",
+      position: "top"
+    })
+    router.push(`/community/${postSlug}`)
+  } catch (err) {
+    console.log(err)
+    Notify.create({
+      message: err.value.data.message,
+      type: 'nagative'
+    })
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const cancel = () => {
+  router.push(`/community/${route.params.postSlug}`)
 }
-
-const onHide = () => {
-  form.value = getInitialForm();
-  tagField.value = '';
-}
-
 </script>

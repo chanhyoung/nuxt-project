@@ -16,6 +16,31 @@ export const usePostStore = defineStore('post', () => {
     })
   };
 
+  const updatePost = async(postId: string, title: string, category: string, content: string, tags: []) => {
+    console.log('updatePost')
+    const { fetchWithAuth } = useAuth();
+    await fetchWithAuth(`${apiBase}/posts/${postId}`, {
+      method: 'PATCH',
+      body: {
+        "title": title,
+        "category": category,
+        "content": content,
+        "tags": tags
+      }
+    })
+  };
+
+  const getPost = async (postId: string) => {
+    console.log('>>>getPost: start.', postId);
+    const { fetchWithAuth } = useAuth();
+
+    const data = await fetchWithAuth(`${apiBase}/posts/${postId}`, {
+      method: 'GET'
+    })
+
+    return data;
+  };
+
   const getPosts = async (category: string | null) => {
     console.log('>>>getPosts: start.', category);
     const { fetchWithAuth } = useAuth();
@@ -31,29 +56,10 @@ export const usePostStore = defineStore('post', () => {
     return data;
   };
 
-  // const getPosts = async () => {
-  //   console.log('>>>getPosts: start.');
-  //   const { useFetchWithAuth } = useAuth();
-  //   const { data, error } = await useFetchWithAuth(`${apiBase}/posts`, {
-  //     method: 'GET'
-  //   })
-
-  //   if (data === null || error === null) return;
-
-  //   if (error.value) {
-  //     throw createError({
-  //       statusCode: error.value.data.code,
-  //       message: error.value.data.message,
-  //       fatal: true
-  //     });
-  //   }
-
-  //   console.log('>>>getCourse: end.');
-  //   return data.value
-  // };
-
   return {
     createPost,
+    updatePost,
+    getPost,
     getPosts,
   };
 });

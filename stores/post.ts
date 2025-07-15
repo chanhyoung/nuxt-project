@@ -30,6 +30,14 @@ export const usePostStore = defineStore('post', () => {
     })
   };
 
+  const deletePost = async(postId: string) => {
+    console.log('deletePost')
+    const { fetchWithAuth } = useAuth();
+    await fetchWithAuth(`${apiBase}/posts/${postId}`, {
+      method: 'DELETE'
+    })
+  };
+
   const getPost = async (postId: string) => {
     console.log('>>>getPost: start.', postId);
     const { fetchWithAuth } = useAuth();
@@ -59,6 +67,7 @@ export const usePostStore = defineStore('post', () => {
   return {
     createPost,
     updatePost,
+    deletePost,
     getPost,
     getPosts,
   };

@@ -43,7 +43,7 @@
             <q-item v-close-popup clickable :to="`/community/${postSlug}/edit`">
               <q-item-section>수정하기</q-item-section>
             </q-item>
-            <q-item v-close-popup clickable>
+            <q-item v-close-popup clickable @click="handleDeletePost">
               <q-item-section>삭제하기</q-item-section>
             </q-item>
           </q-list>
@@ -88,13 +88,34 @@
 
 <script setup>
 const route = useRoute()
+const router = useRouter()
 const postSlug = route.params.postSlug
 const post = ref(null)
 
-const { getPost } = usePostStore()
+const { getPost, deletePost } = usePostStore()
 
 const result = await getPost(postSlug)
 post.value = result
 console.log('post: ', post.value)
 // post.value = result
+
+const handleDeletePost = async () => {
+  if (confirm('삭제 하시겠습니까?') === false) return;
+  try {
+    await deletePost(postSlug)
+    Notify.create({
+      message: '글을 삭제하였습니다.',
+      type: 'info',
+      color: 'primary',
+      position: 'top',
+    })
+    router.push('/community')
+  } catch (err) {
+    console.log(err)
+    Notify.create({
+      message: err.value.data.message,
+      type: 'nagative',
+    })
+  }
+};
 </script>

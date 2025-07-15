@@ -52,12 +52,12 @@ const { createPost } = usePostStore();
 const handleSubmit = async () => {
   try {
     isLoading.value = true;
-    await createPost(
-      form.value.title, 
-      form.value.category, 
-      form.value.content, 
-      form.value.tags
-    );
+    await createPost({
+      title: form.value.title, 
+      category: form.value.category, 
+      content: form.value.content, 
+      tags: form.value.tags
+    });
     Notify.create({
       message: "새글을 작성하였습니다.",
       type: 'info',

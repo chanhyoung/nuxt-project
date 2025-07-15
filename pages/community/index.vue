@@ -6,7 +6,7 @@
         class="col-grow"
       ></PostLeftBar>
       <section class="col-7">
-        <PostHeader></PostHeader>
+        <PostHeader v-model:sort="params.sort"></PostHeader>
         <PostList :items="posts"></PostList>
       </section>
       <PostRightBar
@@ -26,9 +26,10 @@
 const posts = ref([])
 const { getPosts } = usePostStore()
 // 초기 데이터 로드
-const loadPosts = async (category = null) => {
+const loadPosts = async (params = null) => {
+  console.log('params', params)
   try {
-    const result = await getPosts(category)
+    const result = await getPosts(params)
     posts.value = result // .value를 사용하여 반응형 데이터 업데이트
   } catch (error) {
     console.error('Failed to load posts:', error)
@@ -36,20 +37,23 @@ const loadPosts = async (category = null) => {
   }
 }
 
-await loadPosts()
+// await loadPosts()
 
 const params = ref({
   category: null,
+  tags: ['vuejs', 'react'],
+  sort: 'createdAt',
 })
 
 // params 변경 감지
 watch(
   params,
   async () => {
-    await loadPosts(params.value.category)
+    await loadPosts(params.value)
   },
   {
     deep: true,
+    immediate: true,
   },
 )
 

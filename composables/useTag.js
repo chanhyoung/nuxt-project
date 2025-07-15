@@ -1,32 +1,37 @@
-export const useTag = (option) => {
+export const useTag = (options) => {
+  const { tags, updateTags, maxLengthMessage } = options || {}
 
-  let { tags } = option || {}
+  const addTag = (newTag) => {
+    const isEventHandler = typeof newTag !== 'string';
+    const tagValue = isEventHandler
+      ? newTag.target.value.replace(/ /g, '')
+      : newTag.replace(/ /g, '');
 
-  const addTag = (e) => {
-    const tagValue = e.target.value.replace(/ /g, '');
     if (!tagValue) {
       return;
     }
-
-    console.log("tags.length: ", tags.value.length)
     if (tags.value.length >= 10) {
       Notify.create({
-        message: "태그는 10개 이상 등록할 수 없습니다.",
+        message: maxLengthMessage,
         type: 'warning'
       })
       return;
     }
     if (tags.value.includes(tagValue) === false) {
-      tags = [...tags.value, tagValue]
+      // emit('update:tags', [...props.tags, tagValue]);
+      updateTags([...tags.value, tagValue])
     }
-    e.target.value = '';
-    console.log('tags: ', tags)
+
+    if (isEventHandler) {
+      newTag.target.value = '';
+    }
   }
   
   const removeTag = (index) => {
     const model = [...tags.value];
     model.splice(index, 1);
-    tags = model;
+    // emit('update:tags', model)
+    updateTags(model)
   }
 
   return {

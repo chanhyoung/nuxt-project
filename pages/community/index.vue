@@ -10,6 +10,7 @@
         <PostList :items="posts"></PostList>
       </section>
       <PostRightBar
+        v-model:tags="params.tags"
         class="col-3"
         @open-write-dialog="openWriteDialog"
       ></PostRightBar>
@@ -41,7 +42,7 @@ const loadPosts = async (params = null) => {
 
 const params = ref({
   category: null,
-  tags: ['vuejs', 'react'],
+  tags: [],
   sort: 'createdAt',
 })
 

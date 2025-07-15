@@ -21,24 +21,44 @@
       </q-card-section>
       <q-card-section class="q-px-sm">
         <q-card class="q-px-sm" bordered flat square>
-          <q-input borderless dense input-style="font-size: 12px" placeholder="태그로 검색해보세요."></q-input>
+          <q-input 
+            borderless 
+            dense 
+            input-style="font-size: 12px" 
+            placeholder="태그로 검색해보세요."
+            @keypress.enter.prevent="addTag"
+          />
           <div class="q-gutter-sm q-pb-sm">
-            <q-btn size="10px" padding="2px 4px 2px 2px" color="grey-3" text-color="dark" unelevated>
-              vuejs<q-icon name="clear" size="12px" color="grey"></q-icon>
-            </q-btn>
-            <q-btn size="10px" padding="2px 4px 2px 2px" color="grey-3" text-color="dark" unelevated>
-              react<q-icon name="clear" size="12px" color="grey"></q-icon>
+            <q-btn 
+              v-for="(tag, index) in tags" 
+              :key="tag" 
+              size="10px" 
+              padding="2px 4px 2px 2px" 
+              color="grey-3" 
+              text-color="dark" 
+              unelevated 
+              @click="removeTag(index)"
+            >
+              {{ tag }}<q-icon name="clear" size="12px" color="grey"></q-icon>
             </q-btn>
           </div>
         </q-card>
       </q-card-section>
       <q-list padding>
-        <q-item v-for="tag in tags" :key="tag.name" clickable dense>
+        <q-item clickable dense @click="addTag('vuejs')">
           <q-item-section class="text-teal text-caption">
-            #{{ tag.name }}
+            #vuejs
           </q-item-section>
           <q-item-section side class="text-teal text-caption">
-            {{ tag.count }}
+            10
+          </q-item-section>
+        </q-item>
+        <q-item clickable dense @click="addTag('java')">
+          <q-item-section class="text-teal text-caption">
+            #java
+          </q-item-section>
+          <q-item-section side class="text-teal text-caption">
+            10
           </q-item-section>
         </q-item>
       </q-list>
@@ -47,13 +67,19 @@
 </template>
 
 <script setup>
-const tags = ref([
-  {name: 'vuejs', count: 10},
-  {name: 'react', count: 8},
-  {name: 'angular', count: 7},
-  {name: 'html', count: 1},
-  {name: 'css', count: 3},
-])
 
-defineEmits(['openWriteDialog'])
+const props = defineProps({
+  tags: {
+    type: Array,
+    default: () => [],
+  }
+});
+
+const emit = defineEmits(['openWriteDialog', 'update:tags'])
+
+const { addTag, removeTag} = useTag({
+  tags: toRef(props, 'tags'),
+  updateTags: (tags) => emit('update:tags', tags),
+  maxLengthMessage: "태그는 10개 이상 등록할 수 없습니다.",
+});
 </script>

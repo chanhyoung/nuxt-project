@@ -85,39 +85,11 @@ const contentModel = computed({
   set: val => emit('update:content', val)
 });
 
-const useTag = () => {
-
-  const addTag = (e) => {
-    const tagValue = e.target.value.replace(/ /g, '');
-    if (!tagValue) {
-      return;
-    }
-    if (props.tags.length >= 10) {
-      Notify.create({
-        message: "태그는 10개 이상 등록할 수 없습니다.",
-        type: 'warning'
-      })
-      return;
-    }
-    if (props.tags.includes(tagValue) === false) {
-      emit('update:tags', [...props.tags, tagValue]);
-    }
-    e.target.value = '';
-  }
-  
-  const removeTag = (index) => {
-    const model = [...props.tags];
-    model.splice(index, 1);
-    emit('update:tags', model)
-  }
-
-  return {
-    addTag,
-    removeTag
-  }
-}
-
-const { addTag, removeTag} = useTag();
+const { addTag, removeTag} = useTag({
+  tags: toRef(props, 'tags'),
+  updateTags: (tags) => emit('update:tags', tags),
+  maxLengthMessage: "태그는 10개 이상 등록할 수 없습니다.",
+});
 
 const categories = getCategories();
 

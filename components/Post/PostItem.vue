@@ -6,7 +6,7 @@
       </q-avatar>
     </q-item-section>
     <q-item-section>
-      <div class="flex item-center">
+      <div class="flex items-center">
         <span>닉네임&nbsp;&middot;&nbsp;{{ createdAt }}</span>
         <q-chip class="q-ml-sm" dense color="primary" text-color="white">
           {{ category  }}

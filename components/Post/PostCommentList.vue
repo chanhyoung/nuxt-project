@@ -8,16 +8,16 @@
       </q-item-section>
       <q-item-section>
         <div class="flex text-caption">
-          <span>짐코딩</span>
+          <span>{{ item.userId }}</span>
           <span class="q-mx-xs">&middot;</span>
-          <span class="text-grey-6">3일 전</span>
+          <span class="text-grey-6">{{ item.createdAt }}</span>
         </div>
         <div class="q-mt-sm">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius sunt perspiciatis doloremque comodi error, magnam cupiditate ipsum optio consequuntur neque, beatae, maiores delectus molestias cumque debitis sit? aliquid, iste modi.
+          {{ item.message }}
         </div>
       </q-item-section>
       <q-item-section side top>
-        <q-btn flat color="grey" icon="o_delete" round dense >        
+        <q-btn flat color="grey" icon="o_delete" round dense @click="handleDeleteComment(item.id)" >
         </q-btn>
       </q-item-section>
     </q-item>
@@ -31,4 +31,29 @@ defineProps({
     default: () => []
   }
 })
+
+const emit = defineEmits(['success'])
+
+const commentStore = useCommentStore();
+const { deleteComment } = commentStore;
+
+const handleDeleteComment = async (commentId) => {
+  if (confirm('삭제 하시겠습니까?') === false) return;
+  try {
+    await deleteComment(commentId)
+    Notify.create({
+      message: '댓글을 삭제하였습니다.',
+      type: 'info',
+      color: 'primary',
+      position: 'top',
+    })
+    emit("success", commentId)
+  } catch (err) {
+    console.log(err)
+    Notify.create({
+      message: err.value.data.message,
+      type: 'nagative',
+    })
+  }
+};
 </script>

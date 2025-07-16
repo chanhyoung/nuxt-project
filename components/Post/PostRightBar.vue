@@ -17,7 +17,14 @@
       <q-card-section class="flex items-center q-pb-none">
         <div class="text-weight-bold">태그</div>
         <q-space></q-space>
-        <q-btn icon="refresh" dense size="sm" flat round color="grey"></q-btn>
+        <q-btn 
+          icon="refresh" 
+          dense size="sm" 
+          flat 
+          round 
+          color="grey" 
+          @click="loadTags()"
+        />
       </q-card-section>
       <q-card-section class="q-px-sm">
         <q-card class="q-px-sm" bordered flat square>
@@ -44,21 +51,14 @@
           </div>
         </q-card>
       </q-card-section>
+      <div v-if="isLoading" class="flex flex-center">Loading...</div>
       <q-list padding>
-        <q-item clickable dense @click="addTag('vuejs')">
+        <q-item v-for="tag in sumTags" :key="tag.tagName" clickable dense @click="addTag(tag.tagName)">
           <q-item-section class="text-teal text-caption">
-            #vuejs
+            #{{ tag.tagName }}
           </q-item-section>
           <q-item-section side class="text-teal text-caption">
-            10
-          </q-item-section>
-        </q-item>
-        <q-item clickable dense @click="addTag('java')">
-          <q-item-section class="text-teal text-caption">
-            #java
-          </q-item-section>
-          <q-item-section side class="text-teal text-caption">
-            10
+            {{ tag.postCount }}
           </q-item-section>
         </q-item>
       </q-list>
@@ -67,19 +67,39 @@
 </template>
 
 <script setup>
-
 const props = defineProps({
   tags: {
     type: Array,
     default: () => [],
-  }
+  },
 });
 
-const emit = defineEmits(['openWriteDialog', 'update:tags'])
+const sumTags = ref([]);
+const emit = defineEmits(['openWriteDialog', 'update:tags']);
 
-const { addTag, removeTag} = useTag({
+const { addTag, removeTag } = useTag({
   tags: toRef(props, 'tags'),
   updateTags: (tags) => emit('update:tags', tags),
-  maxLengthMessage: "태그는 10개 이상 등록할 수 없습니다.",
+  maxLengthMessage: '태그는 10개 이상 등록할 수 없습니다.',
 });
+
+const { getTags } = usePostStore();
+
+const isLoading = ref(false);
+const loadTags = async () => {
+
+  try {
+    isLoading.value = true;
+    const result = await getTags();
+    sumTags.value = result;
+  } catch (error) {
+    console.error('Failed to load posts:', error)
+    sumTags.value = []
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+loadTags();
+
 </script>

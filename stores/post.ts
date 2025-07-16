@@ -91,11 +91,24 @@ export const usePostStore = defineStore('post', () => {
     return data;
   };
 
+  const getTags = async () => {
+    console.log('>>>getTags: start.');
+    const { fetchWithAuth } = useAuth();
+
+    const data = await fetchWithAuth(`${apiBase}/posts/tags`, {
+      method: 'GET',
+    })
+
+    return data;
+  };
+
+
   return {
     createPost,
     updatePost,
     deletePost,
     getPost,
     getPosts,
+    getTags,
   };
 });

@@ -32,7 +32,7 @@ defineProps({
   }
 })
 
-const emit = defineEmits(['success'])
+const emit = defineEmits(['deleted'])
 
 const commentStore = useCommentStore();
 const { deleteComment } = commentStore;
@@ -47,7 +47,7 @@ const handleDeleteComment = async (commentId) => {
       color: 'primary',
       position: 'top',
     })
-    emit("success", commentId)
+    emit("deleted", commentId)
   } catch (err) {
     console.log(err)
     Notify.create({

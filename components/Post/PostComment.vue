@@ -24,7 +24,7 @@
       </q-card-section>
     </q-card>
 
-    <PostCommentList :items="comments" @success="loadComments()" />
+    <PostCommentList :items="comments" @deleted="loadComments()" />
   </div>
 </template>
 

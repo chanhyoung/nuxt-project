@@ -8,15 +8,16 @@
       <section class="col-7">
         <PostHeader v-model:sort="searchParams.sort"></PostHeader>
         <PostList :items="posts"></PostList>
-        <div class="flex flex-center q-my-md q-ml-md">
+        <!-- <div class="flex flex-center q-my-md q-ml-md">
           <q-btn
             v-if="!isLastPage"
             class="full-width"
             label="더보기"
             outline
             @click="loadMore"
-          ></q-btn>
-        </div>
+          /> 
+        </div>-->
+        <div v-intersection-observer="handleIntersectionObserver"></div>
       </section>
       <PostRightBar
         v-model:tags="searchParams.tags"
@@ -32,6 +33,8 @@
 </template>
 
 <script setup>
+import { vIntersectionObserver } from '@vueuse/components'
+
 const posts = ref([])
 const postDialog = ref(false)
 const { getPosts } = usePostStore()
@@ -42,7 +45,7 @@ const searchParams = ref({
   tags: [],
   sort: 'createdAt',
   page: 1,
-  limit: 2,
+  limit: 5,
 })
 
 const loadPosts = async (searchParams, loadMore = false) => {
@@ -55,11 +58,6 @@ const loadPosts = async (searchParams, loadMore = false) => {
   if (result.length < searchParams.limit) {
     isLastPage.value = true
   }
-}
-
-const loadMore = () => {
-  searchParams.value.page++
-  loadPosts(searchParams.value, true)
 }
 
 watch(
@@ -78,6 +76,25 @@ watch(
     immediate: true,
   },
 )
+
+// const vIntersectionObserver = {
+//   beforeMount: (el, binding) => {
+//     const observer = new IntersectionObserver(binding.value)
+//     observer.observe(el)
+//   },
+// }
+
+const handleIntersectionObserver = ([{ isIntersecting }]) => {
+  if (isIntersecting && !isLastPage.value) {
+    console.log('### handleIntersectionObserver ###')
+    loadMore()
+  }
+}
+
+const loadMore = () => {
+  searchParams.value.page++
+  loadPosts(searchParams.value, true)
+}
 
 const openWriteDialog = () => {
   postDialog.value = true

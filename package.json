@@ -28,6 +28,7 @@
     "@tiptap/starter-kit": "^2.14.0",
     "@tiptap/vue-3": "^2.14.0",
     "@vue/eslint-config-prettier": "^10.1.0",
+    "@vueuse/components": "^13.5.0",
     "@vueuse/core": "^13.1.0",
     "ag-grid-community": "^33.3.2",
     "ag-grid-vue3": "^33.3.2",

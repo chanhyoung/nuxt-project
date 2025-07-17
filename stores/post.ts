@@ -3,6 +3,8 @@ interface GetPostsParams {
   category?: string | null;
   tags?: string[] | null;
   sort?: string;
+  page?: number;
+  limit?: number;
 }
 
 interface CreatePostData {
@@ -82,10 +84,12 @@ export const usePostStore = defineStore('post', () => {
     const data = await fetchWithAuth(`${apiBase}/posts/search`, {
       method: 'POST',
       body: {
-        "category": params?.category,
-        "tags": params?.tags,
-        "sort": params?.sort
-      }
+        category: params?.category,
+        tags: params?.tags,
+        sort: params?.sort,
+        page: params?.page,
+        limit: params?.limit,
+      },
     })
 
     return data;

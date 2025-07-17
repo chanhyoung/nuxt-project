@@ -8,6 +8,15 @@
       <section class="col-7">
         <PostHeader v-model:sort="params.sort"></PostHeader>
         <PostList :items="posts"></PostList>
+        <div class="flex flex-center q-my-md q-ml-md">
+          <q-btn
+            v-if="!isLastPage"
+            class="full-width"
+            label="더보기"
+            outline
+            @click="loadMore"
+          ></q-btn>
+        </div>
       </section>
       <PostRightBar
         v-model:tags="params.tags"
@@ -23,34 +32,42 @@
 </template>
 
 <script setup>
-// posts를 반응형 데이터로 선언
 const posts = ref([])
+const postDialog = ref(false)
 const { getPosts } = usePostStore()
-// 초기 데이터 로드
-const loadPosts = async (params = null) => {
-  console.log('params', params)
-  try {
-    const result = await getPosts(params)
-    posts.value = result // .value를 사용하여 반응형 데이터 업데이트
-  } catch (error) {
-    console.error('Failed to load posts:', error)
-    posts.value = []
-  }
-}
-
-// await loadPosts()
+const isLastPage = ref(false)
 
 const params = ref({
   category: null,
   tags: [],
   sort: 'createdAt',
+  page: 1,
+  limit: 2,
 })
 
-// params 변경 감지
+const loadPosts = async (p, loadMore = false) => {
+  const result = await getPosts(p)
+  if (loadMore) {
+    posts.value = [...posts.value, ...result]
+  } else {
+    posts.value = result
+  }
+  if (result.length < params.value.limit) {
+    isLastPage.value = true
+  }
+}
+
+const loadMore = () => {
+  params.value.page++
+  loadPosts(params.value, true)
+}
+
 watch(
-  params,
-  async () => {
-    await loadPosts(params.value)
+  () => [params.value.category, params.value.tags, params.value.sort],
+  () => {
+    params.value.page = 1
+    isLastPage.value = false
+    loadPosts(params.value)
   },
   {
     deep: true,
@@ -58,17 +75,15 @@ watch(
   },
 )
 
-console.log('posts: ', posts)
-
-const postDialog = ref(false)
-
 const openWriteDialog = () => {
   postDialog.value = true
 }
 
-const writeSuccess = async () => {
+const writeSuccess = () => {
   postDialog.value = false
-  await loadPosts()
+  params.value.page = 1
+  isLastPage.value = false
+  loadPosts(params.value)
 }
 </script>
 

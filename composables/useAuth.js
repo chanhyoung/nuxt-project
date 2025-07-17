@@ -30,7 +30,8 @@ export const useAuth = () => {
     
     if (!isAuthenticated.value) {
       await navigateTo('/auth/login');
-      return Promise.resolve({ data: null, error: null });
+      // return Promise.resolve({ data: null, error: null });
+      return
     }
 
     const fetData = await $fetch(url, {

@@ -49,14 +49,23 @@ const searchParams = ref({
 })
 
 const loadPosts = async (searchParams, loadMore = false) => {
-  const result = await getPosts(searchParams)
-  if (loadMore) {
-    posts.value = [...posts.value, ...result]
-  } else {
-    posts.value = result
-  }
-  if (result.length < searchParams.limit) {
-    isLastPage.value = true
+  try {
+    const result = await getPosts(searchParams)
+    // API 호출 실패 시 result가 undefined일 수 있으므로, 배열인지 확인합니다.
+    if (!Array.isArray(result)) {
+      return
+    }
+
+    if (loadMore) {
+      posts.value = [...posts.value, ...result]
+    } else {
+      posts.value = result
+    }
+    if (result.length < searchParams.limit) {
+      isLastPage.value = true
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
 

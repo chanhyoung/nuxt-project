@@ -1,60 +1,60 @@
-import type { UserWithoutPassword } from '~/types/user';
+import type { UserWithoutPassword } from '~/types/user'
 
 export const useAuthStore = defineStore('auth', () => {
-  const config = useRuntimeConfig();
-  const apiBase = config.public.apiBase;
+  const config = useRuntimeConfig()
+  const apiBase = config.public.apiBase
 
-  const authCookie = useCookie<Maybe<UserWithoutPassword>>('_auth');
-  const authUser = ref<Maybe<UserWithoutPassword>>();
-  const data = ref();
+  const authCookie = useCookie<Maybe<UserWithoutPassword>>('_auth')
+  const authUser = ref<Maybe<UserWithoutPassword>>()
+  const data = ref()
 
-  const signIn = async(email: string, password: string) => {
+  const signIn = async (email: string, password: string) => {
     console.log('signIn')
     const fetData = await $fetch(`${apiBase}/auth/login`, {
       method: 'POST',
       body: {
         email,
         password,
-      }
+      },
     }).catch(error => {
       throw createError({
         statusCode: error.data.code,
         message: error.data.message,
-        fatal: true
-      });
-    });
+        fatal: true,
+      })
+    })
 
-    console.log("fetData: ", fetData)
-    data.value = fetData;
+    console.log('fetData: ', fetData)
+    data.value = fetData
 
     const foundUser = {
       id: data.value.userId,
       email: email,
       roles: ['ADMIN'],
-      token: data.value.accessToken
+      token: data.value.accessToken,
     }
 
-    setUser(foundUser);
-  };
+    setUser(foundUser)
+  }
 
   const setUser = (user: Maybe<UserWithoutPassword>) => {
-    authCookie.value = user;
-    authUser.value = user;
-  };
+    authCookie.value = user
+    authUser.value = user
+  }
 
-  const signOut = async() => {
-    authCookie.value = null;
-    setUser(null);
-    navigateTo("/");
-  };
+  const signOut = async () => {
+    authCookie.value = null
+    setUser(null)
+    navigateTo('/')
+  }
 
   const fetchUser = async () => {
     if (authCookie.value) {
-      setUser(authCookie.value);
+      setUser(authCookie.value)
     }
   }
 
-  const signUp = async(name: string, email: string, password: string) => {
+  const signUp = async (name: string, email: string, password: string) => {
     console.log('signUp')
     const fetData = await $fetch(`${apiBase}/auth/signup`, {
       method: 'POST',
@@ -62,18 +62,22 @@ export const useAuthStore = defineStore('auth', () => {
         name,
         email,
         password,
-      }
+      },
     }).catch(error => {
       throw createError({
         statusCode: error.data.code,
         message: error.data.message,
-        fatal: true
-      });
-    });
+        fatal: true,
+      })
+    })
 
     console.log('>>>fetchData:', fetData)
-  };
+  }
 
+  const hasOwnContent = (contentUserId: string) => {
+    console.log('hasOwnContent: ', contentUserId, authUser.value?.id)
+    return contentUserId === authUser.value?.id
+  }
 
   return {
     user: authUser,
@@ -85,5 +89,6 @@ export const useAuthStore = defineStore('auth', () => {
     signUp,
     signOut,
     fetchUser,
-  };
-});
+    hasOwnContent,
+  }
+})

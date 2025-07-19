@@ -37,7 +37,7 @@
         <div class="text-grey-6">{{ post.createdAt }}</div>
       </div>
       <q-space></q-space>
-      <q-btn icon="more_horiz" round flat>
+      <q-btn v-if="hasOwnContent(post.userId)" icon="more_horiz" round flat>
         <q-menu>
           <q-list style="min-width: 100px">
             <q-item v-close-popup clickable :to="`/community/${postSlug}/edit`">
@@ -93,6 +93,7 @@ const postSlug = route.params.postSlug
 const post = ref(null)
 
 const { getPost, deletePost } = usePostStore()
+const { hasOwnContent } = useAuthStore()
 
 const result = await getPost(postSlug)
 post.value = result
@@ -100,7 +101,7 @@ console.log('post: ', post.value)
 // post.value = result
 
 const handleDeletePost = async () => {
-  if (confirm('삭제 하시겠습니까?') === false) return;
+  if (confirm('삭제 하시겠습니까?') === false) return
   try {
     await deletePost(postSlug)
     Notify.create({
@@ -117,5 +118,5 @@ const handleDeletePost = async () => {
       type: 'nagative',
     })
   }
-};
+}
 </script>

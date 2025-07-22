@@ -24,6 +24,12 @@ export const useAuth = () => {
           signOut()
         }
       },
+    }).catch(() => {
+      throw createError({
+        statusCode: 500,
+        message: '서버에 연결할 수 없습니다.',
+        fatal: true,
+      })
     })
   }
 
@@ -52,10 +58,10 @@ export const useAuth = () => {
           signOut()
         }
       },
-    }).catch(error => {
+    }).catch(() => {
       throw createError({
-        statusCode: error.data.code,
-        message: error.data.message,
+        statusCode: 500,
+        message: '서버에 연결할 수 없습니다.',
         fatal: true,
       })
     })

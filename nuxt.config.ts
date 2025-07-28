@@ -8,16 +8,9 @@ export default defineNuxtConfig({
     typeCheck: true,
   },
 
-  modules: [
-    '@nuxt/eslint', 
-    'nuxt-quasar-ui', 
-    '@pinia/nuxt', 
-    '@vueuse/nuxt'
-  ],
+  modules: ['@nuxt/eslint', 'nuxt-quasar-ui', '@pinia/nuxt', '@vueuse/nuxt'],
 
-  css: [
-    '~/assets/css/tiptap.scss',
-  ],
+  css: ['~/assets/css/tiptap.scss'],
 
   // imports: {
   //   presets: [
@@ -30,17 +23,14 @@ export default defineNuxtConfig({
 
   quasar: {
     extras: {
-      fontIcons: [
-        'material-icons',
-        'material-icons-outlined'
-      ]
+      fontIcons: ['material-icons', 'material-icons-outlined'],
     },
     plugins: ['Notify'],
     config: {
       notify: {
-        position: 'top-right'
-      }
-    }
+        position: 'top-right',
+      },
+    },
   },
 
   runtimeConfig: {
@@ -48,7 +38,8 @@ export default defineNuxtConfig({
     jwtSecretKey: 'superkey',
     public: {
       clientConfigValue: 'test',
-      apiBase: 'http://localhost:8080'
-    }
-  }
+      apiBase: '/api',
+      // apiBase: 'http://localhost:8080'
+    },
+  },
 })

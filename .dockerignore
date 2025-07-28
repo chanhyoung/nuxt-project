@@ -1,0 +1,16 @@
+# Git
+.git
+.gitignore
+
+# Dependencies
+node_modules
+
+# Build output
+.output
+.nuxt
+dist
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -38,8 +38,18 @@ export default defineNuxtConfig({
     jwtSecretKey: 'superkey',
     public: {
       clientConfigValue: 'test',
-      apiBase: '/api',
-      // apiBase: 'http://localhost:8080'
+      apiBase:
+        process.env.NODE_ENV === 'production'
+          ? '/api'
+          : 'http://localhost:8080',
     },
   },
+
+  // nitro: {
+  //   routeRules: {
+  //     "/min/api/**": {
+  //       proxy: "http://localhost:8080/min/api/**",
+  //     },
+  //   },
+  // },
 })

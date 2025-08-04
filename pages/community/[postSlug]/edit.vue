@@ -55,13 +55,12 @@ console.log('form.value: ', form.value)
 const handleSubmit = async () => {
   try {
     isLoading.value = true
-    await updatePost(
-      form.value.id,
-      form.value.title,
-      form.value.category,
-      form.value.content,
-      form.value.tags,
-    )
+    await updatePost(form.value.id, {
+      title: form.value.title,
+      category: form.value.category,
+      content: form.value.content,
+      tags: form.value.tags,
+    })
     Notify.create({
       message: '글을 수정하였습니다.',
       type: 'info',

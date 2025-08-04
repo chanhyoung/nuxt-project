@@ -36,6 +36,7 @@
 import { vIntersectionObserver } from '@vueuse/components'
 
 const posts = ref([])
+
 const postDialog = ref(false)
 const { getPosts } = usePostStore()
 const isLastPage = ref(false)

@@ -1,87 +1,88 @@
 // 타입 정의
 interface GetPostsParams {
-  category?: string | null;
-  tags?: string[] | null;
-  sort?: string;
-  page?: number;
-  limit?: number;
+  category?: string | null
+  tags?: string[] | null
+  sort?: string
+  page?: number
+  limit?: number
 }
 
 interface CreatePostData {
-  title: string;
-  category: string;
-  content: string;
-  tags: string[];
+  title: string
+  category: string
+  content: string
+  tags: string[]
+}
+
+interface UpdatePostData {
+  title: string
+  category: string
+  content: string
+  tags: string[]
 }
 
 export const usePostStore = defineStore('post', () => {
-  const config = useRuntimeConfig();
-  const apiBase = config.public.apiBase;
+  const config = useRuntimeConfig()
+  const apiBase = config.public.apiBase
+  const { fetchWithAuth, useFetchWithAuth } = useAuth()
 
-  const createPost = async(postData: CreatePostData) => {
+  // 공통 에러 처리 함수
+  const handleFetchError = (
+    error: any,
+    defaultMessage = '서버 연결 오류입니다.',
+  ) => {
+    if (error?.value) {
+      const errorData = error.value.data
+      throw createError({
+        statusCode: errorData?.code || 500,
+        message: errorData?.message || defaultMessage,
+        fatal: true,
+      })
+    }
+  }
+
+  // useFetch 결과 처리 헬퍼
+  const processUseFetchResult = <T>(data: any, error: any, defaultValue: T) => {
+    if (error?.value) {
+      handleFetchError(error)
+    }
+    return data?.value || defaultValue
+  }
+
+  const createPost = async (postData: CreatePostData) => {
     console.log('createPost')
-    const { fetchWithAuth } = useAuth();
     await fetchWithAuth(`${apiBase}/posts`, {
       method: 'POST',
-      body: {
-        "title": postData.title,
-        "category": postData.category,
-        "content": postData.content,
-        "tags": postData.tags
-      }
+      body: postData,
     })
-  };
+  }
 
-  const updatePost = async(postId: string, title: string, category: string, content: string, tags: string[]) => {
+  const updatePost = async (postId: string, postData: UpdatePostData) => {
     console.log('updatePost')
-    const { fetchWithAuth } = useAuth();
     await fetchWithAuth(`${apiBase}/posts/${postId}`, {
       method: 'PATCH',
-      body: {
-        "title": title,
-        "category": category,
-        "content": content,
-        "tags": tags
-      }
+      body: postData,
     })
-  };
+  }
 
-  const deletePost = async(postId: string) => {
+  const deletePost = async (postId: string) => {
     console.log('deletePost')
-    const { fetchWithAuth } = useAuth();
     await fetchWithAuth(`${apiBase}/posts/${postId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
     })
-  };
+  }
 
   const getPost = async (postId: string) => {
-    console.log('>>>getPost: start.', postId);
-    const { fetchWithAuth } = useAuth();
-
-    const data = await fetchWithAuth(`${apiBase}/posts/${postId}`, {
-      method: 'GET'
+    console.log('>>>getPost: start.', postId)
+    return await fetchWithAuth(`${apiBase}/posts/${postId}`, {
+      method: 'GET',
     })
-
-    return data;
-  };
+  }
 
   const getPosts = async (params?: GetPostsParams) => {
-    console.log('>>>getPosts: start.', params);
-    const { fetchWithAuth } = useAuth();
+    console.log('>>>getPosts: start.', params)
 
-    // const searchParams = new URLSearchParams();
-    // if (params?.category) {
-    //   searchParams.append('category', params.category);
-    // }
-
-    // if (params?.sort) {
-    //   searchParams.append('sort', params.sort);
-    // }
-
-    // const url = `${apiBase}/posts${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-    // console.log('Final URL:', url);
-
-    const data = await fetchWithAuth(`${apiBase}/posts/search`, {
+    const { data, error } = await useFetchWithAuth(`${apiBase}/posts/search`, {
       method: 'POST',
       body: {
         category: params?.category,
@@ -92,20 +93,19 @@ export const usePostStore = defineStore('post', () => {
       },
     })
 
-    return data;
-  };
+    console.log('>>>getPosts: end.')
+    return processUseFetchResult(data, error, [])
+  }
 
   const getTags = async () => {
-    console.log('>>>getTags: start.');
-    const { fetchWithAuth } = useAuth();
-
-    const data = await fetchWithAuth(`${apiBase}/posts/tags`, {
+    console.log('>>>getTags: start.')
+    const { data, error } = await useFetchWithAuth(`${apiBase}/posts/tags`, {
       method: 'GET',
     })
 
-    return data;
-  };
-
+    console.log('>>>getTags: end.')
+    return processUseFetchResult(data, error, [])
+  }
 
   return {
     createPost,
@@ -114,5 +114,5 @@ export const usePostStore = defineStore('post', () => {
     getPost,
     getPosts,
     getTags,
-  };
-});
+  }
+})

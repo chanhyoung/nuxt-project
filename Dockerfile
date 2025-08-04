@@ -1,33 +1,48 @@
-# Stage 1: Build the Nuxt.js application
+# Stage 1: Build the application
 FROM node:20-alpine AS builder
 
+# Set the working directory
 WORKDIR /app
+
+# Copy package.json and package-lock.json
 COPY package*.json ./
-RUN npm install
+
+# Install all dependencies for the build process
+RUN npm ci
+
+# Copy the rest of the source code
 COPY . .
 
-# This command builds the app, creating the .output directory
+# Build the Nuxt application
 RUN npm run build
 
-# Stage 2: Create the production image
+# Stage 2: Create the production-ready image
 FROM node:20-alpine
 
+# Create a non-root user and group for security
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nuxtjs
+
+# Set the working directory
 WORKDIR /app
 
-# Install Nginx
-RUN apk add --no-cache nginx
+# Copy built assets and necessary files from the builder stage
+COPY --from=builder --chown=nuxtjs:nodejs /app/.output ./
+COPY --from=builder --chown=nuxtjs:nodejs /app/package*.json ./
 
-# Copy the built application from the 'builder' stage
-COPY --from=builder /app/.output ./.output
+# Install only production dependencies
+RUN npm ci --only=production && npm cache clean --force
 
-# Copy production node_modules
-COPY --from=builder /app/node_modules ./node_modules
+# Switch to the non-root user
+USER nuxtjs
 
-# Copy the Nginx configuration and the startup script
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+# Expose the application port
+EXPOSE 3000
 
-EXPOSE 80
+# Set environment variables for production
+ENV NODE_ENV=production
+ENV NITRO_PORT=3000
+ENV NITRO_HOST=0.0.0.0
 
-CMD ["/start.sh"]
+# The command to run the application
+CMD ["node", "server/index.mjs"]

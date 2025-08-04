@@ -92,14 +92,16 @@
 </template>
 
 <script setup>
-const route = useRoute();
-const courseSlug = route.params.courseSlug;
-console.log(">>>courseSlug: ", courseSlug);
+const course = ref([])
+const route = useRoute()
+const courseSlug = route.params.courseSlug
+console.log('>>>courseSlug: ', courseSlug)
 // const { course, prevCourse, nextCourse } = await useCourse(courseSlug) || {}
 
-const { getCourse } = useCourseStore();
-const course = await getCourse(courseSlug);
-
+const { getCourse } = useCourseStore()
+const result = await getCourse(courseSlug)
+console.log('result: ', result)
+course.value = result
 // if (!course) {
 //   console.log("error: 1")
 //   throw createError({
@@ -119,7 +121,7 @@ definePageMeta({
   // keepalive: true,
 
   // validate: (route) => {
-  middleware: async (route) => {
+  middleware: async route => {
     // const courseSlug = route.params.courseSlug;
     // const { course } = await useCourse(courseSlug) || {};
     // if (!course) {

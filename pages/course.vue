@@ -26,8 +26,8 @@
       </div>
       <div class="col">
         <!-- <NuxtErrorBoundary> -->
-          <NuxtPage />
-          <!-- <template #error="{ error, clearError }">
+        <NuxtPage />
+        <!-- <template #error="{ error, clearError }">
             <div class="flex flex-center column q-py-xl">
               <div class="text-h6 q-mb-lg">
                 {{ error }}
@@ -42,8 +42,20 @@
 </template>
 
 <script setup>
-const { getCourses } = useCourseStore();
-const { courses } = await getCourses();
+const { getCourses } = useCourseStore()
+const courses = ref([])
+const error = ref(null)
 
-console.log('courses: ', courses);
+onMounted(async () => {
+  console.log('>>>mounted: start.')
+  try {
+    const result = await getCourses()
+    courses.value = result || []
+  } catch (err) {
+    console.error('Failed to fetch courses:', err)
+    error.value = err
+  } finally {
+    console.log('>>>mounted: end.')
+  }
+})
 </script>

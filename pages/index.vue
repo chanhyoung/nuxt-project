@@ -2,7 +2,9 @@
   <q-page padding>
     <div class="q-my-xl text-center">
       <PageTitle title="All Courses"></PageTitle>
-      <PageDescription description="웹 개발 입문부터 실전까지 학습해보세요!"></PageDescription>
+      <PageDescription
+        description="웹 개발 입문부터 실전까지 학습해보세요!"
+      ></PageDescription>
     </div>
     <div class="row q-col-gutter-lg">
       <div
@@ -24,8 +26,22 @@
 </template>
 
 <script setup>
-const { getCourses } = useCourseStore();
-const { courses } = await getCourses()
+const courses = ref([])
+const { getCourses } = useCourseStore()
+const error = ref(null)
+
+onMounted(async () => {
+  console.log('>>>mounted: start.')
+  try {
+    const result = await getCourses()
+    courses.value = result || []
+  } catch (err) {
+    console.error('Failed to fetch courses:', err)
+    error.value = err
+  } finally {
+    console.log('>>>mounted: end.')
+  }
+})
 </script>
 
 <style lang="scss" scoped></style>
